@@ -1,0 +1,131 @@
+Atividades de Laboratório - Computação Gráfica com Three.js
+Respostas
+
+O código de cada lab está em lab1/src/main.js, lab2/src/main.js e lab3/src/main.js.
+Em cada página tem um painel no canto esquerdo com botões pra testar as tarefas.
+
+
+LAB 1 - Minha primeira cena 3D
+------------------------------
+
+Tarefas
+
+1. Com o MeshNormalMaterial cada face do cubo tinha uma cor diferente, porque a
+cor vem da direção da face. Trocando pelo MeshBasicMaterial laranja, o cubo
+inteiro fica do mesmo laranja e parece plano, sem sombra nenhuma. Dá pra ver
+que ele está girando só pelo contorno.
+
+2. Troquei o cubo pela esfera, depois pelo cone e pelo toro. Só a forma muda, o
+material continua o mesmo. Com o material laranja a esfera parece um círculo.
+
+3. O objeto em (3, 0, 0) aparece em cima do eixo vermelho (X), o de (0, 3, 0)
+no eixo verde (Y) e o de (0, 0, 3) no eixo azul (Z), vindo na direção da tela.
+
+4. Com a câmera em (0, 10, 0) a gente vê a cena de cima. Aparecem os eixos X e Z
+e o eixo Y fica apontando pra câmera, então quase não aparece. Os objetos ficam
+menores porque a câmera está mais longe.
+
+5. Com 20 graus parece um zoom: os objetos ficam grandes e aparece pouca coisa
+da cena. Com 120 graus é o contrário: tudo fica pequeno, aparece muito mais
+coisa e a imagem fica distorcida nas bordas. Depois de mudar o fov tem que
+chamar camera.updateProjectionMatrix().
+
+Perguntas
+
+1. Qual a diferença entre geometria e material?
+A geometria é a forma do objeto (os vértices e faces, tipo um cubo ou uma
+esfera). O material é a aparência, ou seja, a cor, textura, brilho e como ele
+reage à luz. O Mesh junta os dois.
+
+2. O que acontece se remover renderizador.render(cena, camera)?
+A tela fica preta/vazia. É essa linha que desenha a cena na tela usando a
+câmera. Sem ela os objetos existem no código, mas nada é desenhado.
+
+3. Para que serve o laço de animação?
+Ele roda várias vezes por segundo (uns 60) e a cada vez atualiza os objetos e
+desenha a cena de novo. É isso que faz parecer que as coisas estão se mexendo.
+Sem o laço a cena seria desenhada uma vez só e ficaria parada.
+
+
+LAB 2 - Transformações: translação, rotação e escala
+----------------------------------------------------
+
+Tarefas
+
+1. Mudei o movimento do cubo vermelho do Y para o X:
+position.x = -4 + 2 * Math.sin(t). Agora ele vai e volta para os lados.
+
+2. No cubo verde usei rotation.x = t, depois rotation.z = t, e por último
+rotation.set(t, t, t) para girar nos três eixos juntos.
+
+3. Para deixar parado em 90 graus: rotation.y = Math.PI / 2.
+
+4. No cubo azul mudei só o scale.y, deixando x e z em 1. Também ajustei o
+position.y para metade da altura, assim a base fica no chão e ele cresce
+para cima como uma barra.
+
+5. Adicionei as teclas W e S, que somam e subtraem no position.y, e a tecla R,
+que soma 15 graus (Math.PI / 12) no rotation.y.
+
+Perguntas
+
+1. Por que usamos Math.sin para fazer o cubo ir e voltar?
+Porque o seno fica sempre entre -1 e 1 e se repete. O tempo t só aumenta, mas
+sin(t) fica oscilando, então o cubo vai e volta sozinho, sem precisar de if
+para trocar de direção. E o movimento fica suave, ele desacelera nas pontas.
+
+2. Qual a diferença entre rotation.y = t e rotation.y += 0.01?
+Com rotation.y = t o ângulo depende do tempo que passou, então a velocidade é
+sempre a mesma. Com += 0.01 ele soma um pouco a cada quadro, então a velocidade
+depende do FPS: num computador mais rápido ele gira mais rápido, e se travar
+ele gira mais devagar.
+
+3. Por que os eixos pequenos giram junto com o cubo verde e os grandes não?
+Porque os eixos pequenos foram adicionados dentro do cubo (cuboVerde.add), então
+são filhos dele e herdam a posição e a rotação do cubo. Os eixos grandes foram
+adicionados direto na cena, então não dependem do cubo e ficam parados.
+
+
+LAB 3 - Luz e materiais
+-----------------------
+
+Tarefas
+
+1. Com a luz ambiente em 0, a esfera Basic não muda, mas na Lambert e na Phong
+o lado que não recebe a luz pontual fica totalmente preto. Com 1, a Basic
+continua igual e as outras duas ficam bem mais claras, o lado de trás fica
+vermelho e elas ficam parecidas com a Basic.
+
+2. Com a luz pontual azul a esfera vermelha fica escura porque ela só reflete
+a parte vermelha da luz. A luz azul não tem vermelho, então não sobra nada
+para refletir. Fica só a luz ambiente e, na Phong, um brilhinho azul.
+
+3. Com shininess 5 o brilho da Phong fica grande e espalhado, parece plástico
+fosco. Com 300 o brilho vira um pontinho pequeno e forte, parece uma bola de
+bilhar ou algo bem polido.
+
+4. Parei a animação e deixei a luz em (0, 5, 0). Agora a parte de cima das
+esferas fica iluminada e a de baixo fica escura. A Basic continua igual.
+
+5. Coloquei uma segunda luz pontual verde girando no sentido contrário (usando
+-t no lugar de t). Como as esferas são vermelhas, a luz verde quase não muda a
+cor delas, mas dá pra ver o brilho verde passando na esfera Phong.
+
+Perguntas
+
+1. Por que a esfera Basic parece um círculo achatado, sem volume?
+Porque o MeshBasicMaterial ignora a luz e pinta tudo da mesma cor. O que dá a
+sensação de volume é a sombra, uma parte mais clara e outra mais escura. Sem
+isso a esfera vira só um círculo vermelho.
+
+2. Qual a diferença entre reflexão difusa e especular?
+A difusa espalha a luz para todos os lados, então a superfície parece igual de
+qualquer ângulo. Exemplo: papel, parede pintada, tecido.
+A especular reflete a luz mais em uma direção e forma aquele ponto de brilho,
+que muda de lugar quando a gente se move. Exemplo: bola de bilhar, carro
+encerado, colher de metal.
+
+3. Por que o lado da esfera oposto à luz não fica totalmente preto?
+Por causa da luz ambiente, que ilumina todos os lados igual. Ela imita a luz
+que, na vida real, bate nas paredes e nos objetos e acaba chegando no lado de
+trás também. Se colocar a intensidade dela em 0, esse lado fica preto mesmo.

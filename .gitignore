@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.claude/
+
+# material da disciplina (não é código do projeto)
+*.pdf
+Tutorial*.md
